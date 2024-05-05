@@ -1,7 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:possapp/core/constants/variables.dart';
 import 'package:possapp/core/extensions/int_ext.dart';
 import 'package:possapp/data/models/response/product_response_model.dart';
-
 
 import '../../../core/components/spaces.dart';
 import '../../../core/constants/colors.dart';
@@ -38,8 +39,17 @@ class ProductCard extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(50.0)),
-              // child: Image.asset(
-              //   data.image,
+              child: CachedNetworkImage(
+                imageUrl: '${Variables.imageBaseUrl}${data.image}',
+                width: 68, 
+                height: 68,
+                fit: BoxFit.cover,
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    CircularProgressIndicator(value: downloadProgress.progress),
+                errorWidget: (context, url, error) => const Icon(Icons.food_bank_rounded, size: 80,),
+              ),
+              // Image.network(
+              //   '${Variables.imageBaseUrl}${data.image}',
               //   width: 68,
               //   height: 68,
               //   fit: BoxFit.cover,

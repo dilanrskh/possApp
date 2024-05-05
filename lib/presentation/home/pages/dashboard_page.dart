@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:possapp/core/assets/assets.gen.dart';
 import 'package:possapp/core/constants/colors.dart';
-import 'package:possapp/data/datasources/auth_local_datasource.dart';
-import 'package:possapp/presentation/auth/pages/login_page.dart';
-import 'package:possapp/presentation/home/bloc/logout/logout_bloc.dart';
 import 'package:possapp/presentation/home/pages/home_page.dart';
 import 'package:possapp/presentation/home/widgets/nav_item.dart';
+import 'package:possapp/presentation/setting/pages/setting_page.dart';
 class DashboardPageState extends StatefulWidget {
   const DashboardPageState({super.key});
 
@@ -25,9 +22,7 @@ class _DashboardPageStateState extends State<DashboardPageState> {
     const Center(
       child: Text("History"),
     ),
-    const Center(
-      child: Text("Orders"),
-    ),
+    const SettingPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -39,34 +34,6 @@ class _DashboardPageStateState extends State<DashboardPageState> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('dashboard'),
-        actions: [
-          BlocConsumer<LogoutBloc, LogoutState>(
-            listener: (context, state) {
-              state.maybeMap(
-                orElse: () {},
-                success: (_) {
-                  AuthLocalDataSource().removeAuthData();
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginPage()));
-                },
-              );
-            },
-            // dibuilder bakal mengembalikan widget
-            builder: (context, state) {
-              return IconButton(
-                onPressed: () {
-                  context.read<LogoutBloc>().add(const LogoutEvent.logout());
-                },
-                icon: const Icon(Icons.logout),
-              );
-            },
-          ),
-        ],
-      ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(20.0),
@@ -108,8 +75,8 @@ class _DashboardPageStateState extends State<DashboardPageState> {
               onTap: () => _onItemTapped(2),
             ),
             NavItem(
-              iconPath: Assets.icons.orders.path,
-              label: 'Orders',
+              iconPath: Assets.icons.dashboard.path,
+              label: 'Kelola',
               isActive: _selectedIndex == 3,
               onTap: () => _onItemTapped(3),
             ),

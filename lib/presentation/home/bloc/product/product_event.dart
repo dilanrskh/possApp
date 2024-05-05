@@ -7,4 +7,6 @@ class ProductEvent with _$ProductEvent {
   const factory ProductEvent.fetch() = _Fetch;
   // ini untuk ambil data dari api dan di filter berdasarkan kategori
   const factory ProductEvent.fetchByCategory(String category) = _FetchByCategory;
+  // Fetch data produk dari lokal
+  const factory ProductEvent.fetchLocal() = _FetchLocal;
 }

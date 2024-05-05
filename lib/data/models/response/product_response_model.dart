@@ -28,7 +28,7 @@ class Product {
   final int stock;
   final String category;
   final String image;
-  final String tanggalTambahProduk;
+  final String? tanggalTambahProduk;
 
   Product({
     required this.id,
@@ -38,7 +38,7 @@ class Product {
     required this.stock,
     required this.category,
     required this.image,
-    required this.tanggalTambahProduk,
+    this.tanggalTambahProduk,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -50,18 +50,15 @@ class Product {
       stock: json['stock'],
       category: json['category'],
       image: json['image'] ?? '',
-      tanggalTambahProduk: json['tanggal_tambah_produk'],
+      // tanggalTambahProduk: json['tanggal_tambah_produk'],
     );
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id,
     'name': name,
-    'deskripsi': deskripsi,
     'harga': harga,
     'stock': stock,
     'category': category,
     'image': image,
-    'tanggal_tambah_produk': tanggalTambahProduk,
   };
 }

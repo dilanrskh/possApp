@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ProductBloc(ProductRemoteDataSource())
-            ..add(const ProductEvent.fetch()),
+            ..add(const ProductEvent.fetchLocal()),
         ),
       ],
       child: MaterialApp(
