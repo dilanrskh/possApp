@@ -1,62 +1,73 @@
 import 'package:possapp/data/models/response/product_response_model.dart';
 import 'package:sqflite/sqflite.dart';
 
-class ProductLocalDataSource {
-  ProductLocalDataSource._init();
+class ProductLocalDatasource {
+  ProductLocalDatasource._init();
 
-  static final ProductLocalDataSource instance = ProductLocalDataSource._init();
+  static final ProductLocalDatasource instance = ProductLocalDatasource._init();
 
   // bikin tabel produk
-  final String tableProduct = 'produks';
+
+  final String tableProducts = 'produks';
 
   static Database? _database;
 
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = dbPath + filePath;
-    return await openDatabase(path, version: 1, onCreate: _createDB);
-  }
 
-  // ini untuk membuat database dan tabel nya
+    return await openDatabase(
+      path,
+      version: 1,
+      onCreate: _createDB,
+    );
+  }
 
   Future<void> _createDB(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE $tableProduct (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          name TEXT,
-          harga INTEGER,
-          stock INTEGER,
-          image TEXT,
-          category TEXT
-          )
-        ''');
+      CREATE TABLE $tableProducts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        harga INTEGER,
+        stock INTEGER,
+        image TEXT,
+        category TEXT,
+        is_best_seller INTEGER,
+        is_sync INTEGER DEFAULT 0)
+      ''');
   }
 
-  // ini untuk get Database
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('posapp.db');
+    _database = await _initDB('posapp15.db');
     return _database!;
   }
 
-  // Remove all product
+  // remove all data product
   Future<void> removeAllProduct() async {
     final db = await instance.database;
-    await db.delete(tableProduct);
+    await db.delete(tableProducts);
   }
 
-  // Insert data produk
+  // tambah data produk
   Future<void> insertAllProduct(List<Product> products) async {
     final db = await instance.database;
     for (var product in products) {
-      await db.insert(tableProduct, product.toJson());
+      await db.insert(tableProducts, product.toJson());
     }
   }
 
-  // Get All data produk dari lokal
+  // Add single data produk
+  Future<Product> insertProduct(Product product) async {
+    final db = await instance.database;
+    int id = await db.insert(tableProducts, product.toJson());
+    return product.copyWith(id: id);
+  }
+
+  // Get all data produk dari lokal
   Future<List<Product>> getAllProduct() async {
     final db = await instance.database;
-    final result = await db.query(tableProduct);
+    final result = await db.query(tableProducts);
     return result.map((e) => Product.fromJson(e)).toList();
   }
 }

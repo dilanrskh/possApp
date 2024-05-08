@@ -12,7 +12,7 @@ class ProductRemoteDataSource {
       final authData = await AuthLocalDataSource()
       .getAuthData();
       final response = await http.get(
-        Uri.parse('${Variables.baseUrl}/api/produk-api'),
+        Uri.parse('${Variables.baseUrl}/api/products'),
         headers: {
           'Authorization': 'Bearer ${authData.token}',
         },
