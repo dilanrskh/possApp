@@ -7,6 +7,7 @@ import 'package:possapp/data/datasources/product_remote_datasource.dart';
 import 'package:possapp/presentation/auth/bloc/login/login_bloc.dart';
 import 'package:possapp/presentation/auth/pages/login_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:possapp/presentation/home/bloc/checkout/checkout_bloc.dart';
 import 'package:possapp/presentation/home/bloc/logout/logout_bloc.dart';
 import 'package:possapp/presentation/home/bloc/product/product_bloc.dart';
 import 'package:possapp/presentation/home/pages/dashboard_page.dart';
@@ -31,6 +32,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => ProductBloc(ProductRemoteDataSource())
             ..add(const ProductEvent.fetchLocal()),
+        ),
+        BlocProvider(
+          create: (context) => CheckoutBloc(),
         ),
       ],
       child: MaterialApp(

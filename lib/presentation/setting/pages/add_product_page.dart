@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:possapp/core/components/buttins.dart';
 import 'package:possapp/core/components/custom_dropdown.dart';
 import 'package:possapp/core/components/custom_text_field.dart';
@@ -25,7 +24,7 @@ class _AddProductPageState extends State<AddProductPage> {
   TextEditingController? priceController;
   TextEditingController? stockController;
   String category = 'food';
-  File? imageFile;
+  XFile? imageFile;
   bool isBestSeller = false;
 
   final List<CategoryModel> categories = [
@@ -127,11 +126,11 @@ class _AddProductPageState extends State<AddProductPage> {
                       harga: price,
                       stock: stock,
                       category: category,
-                      image: imageFile!.absolute.path,
+                      image: imageFile!.path,
                     );
                     context
                         .read<ProductBloc>()
-                        .add(ProductEvent.addProduct(product));
+                        .add(ProductEvent.addProduct(product, imageFile!));
                   },
                   label: 'Simpan',
                 );

@@ -30,7 +30,6 @@ class Product {
   final String category;
   final String image;
   final bool isBestSeller;
-  final bool isSync;
   final String? tanggalTambahProduk;
 
   Product({
@@ -43,7 +42,6 @@ class Product {
     required this.image,
     this.tanggalTambahProduk,
     this.isBestSeller = false,
-    this.isSync = true,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -56,7 +54,6 @@ class Product {
       category: json['category'],
       image: json['image'] ?? '',
       isBestSeller: json['is_best_seller'] == 1 ? true : false,
-      isSync: json['is_sync'] == null ? true : json['is_sync'] == 1 ? true : false,
       // tanggalTambahProduk: json['tanggal_tambah_produk'],
     );
   }
@@ -68,7 +65,6 @@ class Product {
     'category': category,
     'image': image,
     'is_best_seller': isBestSeller ? 1 : 0,
-    'is_sync': isSync ? 1 : 0,
   };
 
   Product copyWith({
@@ -80,7 +76,6 @@ class Product {
     String? category,
     String? image,
     bool? isBestSeller,
-    bool? isSync,
     String? tanggalTambahProduk,
   }) {
     return Product(
@@ -92,7 +87,6 @@ class Product {
       category: category ?? this.category,
       image: image ?? this.image,
       isBestSeller: isBestSeller ?? this.isBestSeller,
-      isSync: isSync ?? this.isSync,
       tanggalTambahProduk: tanggalTambahProduk ?? this.tanggalTambahProduk,
     );
   }

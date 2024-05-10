@@ -96,7 +96,56 @@ class MenuProductItem extends StatelessWidget {
                                             ),
                                           ),
                                         ],
-                                      )
+                                      ),
+                                      const SpaceHeight(10.0),
+                                      ClipRRect(
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              '${Variables.imageBaseUrl}${data.image}',
+                                          placeholder: (context, url) =>
+                                              const CircularProgressIndicator(),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(
+                                            Icons.food_bank_rounded,
+                                            size: 80,
+                                          ),
+                                          width: 80,
+                                          height: 80,
+                                        ),
+                                      ),
+                                      const SpaceHeight(10),
+                                      Text(
+                                        data.category,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: const Color.fromARGB(
+                                              255, 85, 84, 84),
+                                        ),
+                                      ),
+                                      const SpaceHeight(10),
+                                      Text(
+                                        data.harga.toString(),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          color: const Color.fromARGB(
+                                              255, 85, 84, 84),
+                                        ),
+                                      ),
+                                      const SpaceHeight(10),
+                                      Text(
+                                        data.stock.toString(),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: const Color.fromARGB(
+                                              255, 85, 84, 84),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),

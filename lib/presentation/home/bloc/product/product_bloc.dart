@@ -1,8 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:possapp/data/datasources/product_local_datasource.dart';
 import 'package:possapp/data/datasources/product_remote_datasource.dart';
+import 'package:possapp/data/models/request/product_request_model.dart';
 import 'package:possapp/data/models/response/product_response_model.dart';
 
 part 'product_bloc.freezed.dart';
@@ -30,7 +32,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
     // Ini untuk Fetch Data Lokal
     on<_FetchLocal>((event, emit) async {
-      final localProducts = await ProductLocalDatasource.instance.getAllProduct();
+      final localProducts =
+          await ProductLocalDatasource.instance.getAllProduct();
       products = localProducts;
       emit(ProductState.success(products));
     });
@@ -45,13 +48,27 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
               .where((element) => element.category == event.category)
               .toList();
 
-              emit(ProductState.success(newProduct));
+      emit(ProductState.success(newProduct));
     });
 
     on<_AddProduct>((event, emit) async {
       emit(const ProductState.loading());
-      final newProduct = await ProductLocalDatasource.instance.insertProduct(event.product);
-      products.add(newProduct);
+      final requestData = ProductRequestModel(
+        name: event.product.name,
+        price: event.product.harga,
+        stock: event.product.stock,
+        category: event.product.category,
+        isBestSeller: event.product.isBestSeller ? 1 : 0,
+        image: event.image,
+      );
+      final response = await _productRemoteDataSource.addProduct(requestData);
+      response.fold(
+        (l) => emit(ProductState.error(l)),
+        (r) {
+          products.add(r.data);
+          emit(ProductState.success(products));
+        }
+      );
 
       emit(ProductState.success(products));
     });

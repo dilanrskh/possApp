@@ -10,5 +10,5 @@ class ProductEvent with _$ProductEvent {
   // Fetch data produk dari lokal
   const factory ProductEvent.fetchLocal() = _FetchLocal;
   // Add data produk
-  const factory ProductEvent.addProduct(Product product) = _AddProduct;
+  const factory ProductEvent.addProduct(Product product, XFile image) = _AddProduct;
 }
