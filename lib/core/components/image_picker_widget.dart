@@ -1,11 +1,12 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:possapp/core/assets/assets.gen.dart';
 import 'package:possapp/core/components/buttins.dart';
-import 'package:possapp/core/constants/colors.dart';
+
+import '../assets/assets.gen.dart';
+import '../constants/colors.dart';
+import 'spaces.dart';
 
 class ImagePickerWidget extends StatefulWidget {
   final String label;
@@ -34,7 +35,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     setState(() {
       if (pickedFile != null) {
         imagePath = pickedFile.path;
-        widget.onChanged((pickedFile));
+        widget.onChanged(pickedFile);
       } else {
         debugPrint('No image selected.');
         widget.onChanged(null);
@@ -55,9 +56,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(
-            height: 12.0,
-          ),
+          const SpaceHeight(12.0),
         ],
         Container(
           padding: const EdgeInsets.all(6.0),

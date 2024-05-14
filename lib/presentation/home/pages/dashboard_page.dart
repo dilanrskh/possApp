@@ -62,8 +62,8 @@ class _DashboardPageStateState extends State<DashboardPageState> {
               onTap: () => _onItemTapped(0),
             ),
             NavItem(
-                iconPath: Assets.icons.payments.path,
-                label: 'Payment',
+                iconPath: Assets.icons.orders.path,
+                label: 'Orders',
                 isActive: _selectedIndex == 1,
                 onTap: () {
                   _onItemTapped(1);

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:possapp/presentation/home/bloc/checkout/checkout_bloc.dart';
 
 // import '../../../core/components/spaces.dart';
 import '../../../core/components/spaces.dart';
 import '../../../core/constants/colors.dart';
-
-
+// Karena si badges ini sebenernya udah ada di material flutter, jadi pas di import, tinggal kita
+// spesifikasikan aja biar lebih spesifik manggilnya
+import 'package:badges/badges.dart' as badges;
 
 class NavItem extends StatelessWidget {
   final String iconPath;
@@ -29,17 +32,70 @@ class NavItem extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            width: 25.0,
-            height: 25.0,
-            child: SvgPicture.asset(
-              iconPath,
-              colorFilter: ColorFilter.mode(
-                isActive ? AppColors.black : AppColors.disabled,
-                BlendMode.srcIn,
-              ),
-            ),
-          ),
+          label == 'Orders'
+              ? BlocBuilder<CheckoutBloc, CheckoutState>(
+                  builder: (context, state) {
+                    return state.maybeWhen(orElse: () {
+                      return SizedBox(
+                        width: 25.0,
+                        height: 25.0,
+                        child: SvgPicture.asset(
+                          iconPath,
+                          colorFilter: ColorFilter.mode(
+                            isActive ? AppColors.black : AppColors.disabled,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      );
+                    }, success: (data, qty, total) {
+                      if (data.isEmpty) {
+                        return SizedBox(
+                          width: 25.0,
+                          height: 25.0,
+                          child: SvgPicture.asset(
+                            iconPath,
+                            colorFilter: ColorFilter.mode(
+                              isActive ? AppColors.black : AppColors.disabled,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        );
+                      } else {
+                        return badges.Badge(
+                          badgeContent: Text(
+                            '$qty',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          child: SizedBox(
+                            width: 25.0,
+                            height: 25.0,
+                            child: SvgPicture.asset(
+                              iconPath,
+                              colorFilter: ColorFilter.mode(
+                                isActive ? AppColors.black : AppColors.disabled,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                    });
+                  },
+                )
+              : SizedBox(
+                  width: 25.0,
+                  height: 25.0,
+                  child: SvgPicture.asset(
+                    iconPath,
+                    colorFilter: ColorFilter.mode(
+                      isActive ? AppColors.black : AppColors.disabled,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
           const SpaceHeight(4.0),
           Text(
             label,

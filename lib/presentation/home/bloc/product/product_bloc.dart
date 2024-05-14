@@ -12,7 +12,7 @@ part 'product_event.dart';
 part 'product_state.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
-  final ProductRemoteDataSource _productRemoteDataSource;
+  final ProductRemoteDatasource _productRemoteDataSource;
   // Untuk Ambil data produk
   List<Product> products = [];
   ProductBloc(
@@ -20,7 +20,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ) : super(const _Initial()) {
     on<_Fetch>((event, emit) async {
       emit(const ProductState.loading());
-      final response = await _productRemoteDataSource.getProduct();
+      final response = await _productRemoteDataSource.getProducts();
       response.fold(
         (l) => emit(ProductState.error(l)),
         (r) {
@@ -55,7 +55,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(const ProductState.loading());
       final requestData = ProductRequestModel(
         name: event.product.name,
-        price: event.product.harga,
+        price: event.product.price,
         stock: event.product.stock,
         category: event.product.category,
         isBestSeller: event.product.isBestSeller ? 1 : 0,

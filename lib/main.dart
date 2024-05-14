@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           create: (context) => LogoutBloc(AuthRemoteDataSource()),
         ),
         BlocProvider(
-          create: (context) => ProductBloc(ProductRemoteDataSource())
+          create: (context) => ProductBloc(ProductRemoteDatasource())
             ..add(const ProductEvent.fetchLocal()),
         ),
         BlocProvider(

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:possapp/core/components/buttins.dart';
-import 'package:possapp/core/components/custom_dropdown.dart';
-import 'package:possapp/core/components/custom_text_field.dart';
-import 'package:possapp/core/components/image_picker_widget.dart';
-import 'package:possapp/core/components/spaces.dart';
 import 'package:possapp/core/extensions/string_ext.dart';
-import 'package:possapp/data/models/response/product_response_model.dart';
-import 'package:possapp/presentation/home/bloc/product/product_bloc.dart';
 import 'package:possapp/presentation/setting/models/category_models.dart';
+import '../../../core/components/custom_dropdown.dart';
+import '../../../core/components/custom_text_field.dart';
+import '../../../core/components/image_picker_widget.dart';
+import '../../../core/components/spaces.dart';
+import '../../../data/models/response/product_response_model.dart';
+import '../../home/bloc/product/product_bloc.dart';
 
 class AddProductPage extends StatefulWidget {
   const AddProductPage({super.key});
@@ -23,8 +22,11 @@ class _AddProductPageState extends State<AddProductPage> {
   TextEditingController? nameController;
   TextEditingController? priceController;
   TextEditingController? stockController;
+
   String category = 'food';
+
   XFile? imageFile;
+
   bool isBestSeller = false;
 
   final List<CategoryModel> categories = [
@@ -35,10 +37,10 @@ class _AddProductPageState extends State<AddProductPage> {
 
   @override
   void initState() {
-    super.initState();
     nameController = TextEditingController();
     priceController = TextEditingController();
     stockController = TextEditingController();
+    super.initState();
   }
 
   @override
@@ -53,13 +55,7 @@ class _AddProductPageState extends State<AddProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Tambah Produk',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
+        title: const Text('Tambah Produk'),
         centerTitle: true,
       ),
       body: ListView(
@@ -74,19 +70,43 @@ class _AddProductPageState extends State<AddProductPage> {
             controller: priceController!,
             label: 'Harga Produk',
             keyboardType: TextInputType.number,
-            onChanged: (value) {},
+            onChanged: (value) {
+              // final int priceValue = value.toIntegerFromText;
+              // priceController.text = priceValue.currencyFormatRp;
+              // priceController.selection = TextSelection.fromPosition(
+              //     TextPosition(offset: priceController.text.length));
+            },
           ),
           const SpaceHeight(20.0),
           ImagePickerWidget(
             label: 'Foto Produk',
-            onChanged: (file) {},
+            onChanged: (file) {
+              if (file == null) {
+                return;
+              }
+              imageFile = file;
+            },
           ),
           const SpaceHeight(20.0),
           CustomTextField(
             controller: stockController!,
             label: 'Stock Produk',
             keyboardType: TextInputType.number,
-            onChanged: (value) {},
+          ),
+          const SpaceHeight(20.0),
+          //isBestSeller
+          Row(
+            children: [
+              Checkbox(
+                value: isBestSeller,
+                onChanged: (value) {
+                  setState(() {
+                    isBestSeller = value!;
+                  });
+                },
+              ),
+              const Text('Produk Terlaris'),
+            ],
           ),
           const SpaceHeight(20.0),
           CustomDropdown<CategoryModel>(
@@ -101,10 +121,11 @@ class _AddProductPageState extends State<AddProductPage> {
           BlocConsumer<ProductBloc, ProductState>(
             listener: (context, state) {
               state.maybeMap(
-                  orElse: () {},
-                  success: (_) {
-                    Navigator.pop(context);
-                  });
+                orElse: () {},
+                success: (_) {
+                  Navigator.pop(context);
+                },
+              );
             },
             builder: (context, state) {
               return state.maybeWhen(orElse: () {
@@ -122,12 +143,13 @@ class _AddProductPageState extends State<AddProductPage> {
                     final int price = priceController!.text.toIntegerFromText;
                     final int stock = stockController!.text.toIntegerFromText;
                     final Product product = Product(
-                      name: name,
-                      harga: price,
-                      stock: stock,
-                      category: category,
-                      image: imageFile!.path,
-                    );
+                        name: name,
+                        price: price,
+                        stock: stock,
+                        category: category,
+                        isBestSeller: isBestSeller,
+                        image: imageFile!.path
+                        );
                     context
                         .read<ProductBloc>()
                         .add(ProductEvent.addProduct(product, imageFile!));

@@ -23,12 +23,12 @@ class AddProductResponseModel {
       AddProductResponseModel(
         success: json["success"],
         message: json["message"],
-        data: Product.fromJson(json["data"]),
+        data: Product.fromMap(json["data"]),
       );
 
   Map<String, dynamic> toMap() => {
         "success": success,
         "message": message,
-        "data": data.toJson(),
+        "data": data.toMap(),
       };
 }

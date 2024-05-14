@@ -119,21 +119,21 @@ class MenuProductItem extends StatelessWidget {
                                       const SpaceHeight(10),
                                       Text(
                                         data.category,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w600,
-                                          color: const Color.fromARGB(
-                                              255, 85, 84, 84),
+                                          color:
+                                              Color.fromARGB(255, 85, 84, 84),
                                         ),
                                       ),
                                       const SpaceHeight(10),
                                       Text(
-                                        data.harga.toString(),
+                                        data.price.toString(),
                                         style: const TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w700,
-                                          color: const Color.fromARGB(
-                                              255, 85, 84, 84),
+                                          color:
+                                              Color.fromARGB(255, 85, 84, 84),
                                         ),
                                       ),
                                       const SpaceHeight(10),
@@ -142,8 +142,8 @@ class MenuProductItem extends StatelessWidget {
                                         style: const TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w600,
-                                          color: const Color.fromARGB(
-                                              255, 85, 84, 84),
+                                          color:
+                                              Color.fromARGB(255, 85, 84, 84),
                                         ),
                                       ),
                                     ],

@@ -1,3 +1,4 @@
+
 import 'package:possapp/data/models/response/product_response_model.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -5,8 +6,6 @@ class ProductLocalDatasource {
   ProductLocalDatasource._init();
 
   static final ProductLocalDatasource instance = ProductLocalDatasource._init();
-
-  // bikin tabel produk
 
   final String tableProducts = 'produks';
 
@@ -28,46 +27,51 @@ class ProductLocalDatasource {
       CREATE TABLE $tableProducts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
-        harga INTEGER,
+        price INTEGER,
         stock INTEGER,
         image TEXT,
         category TEXT,
         is_best_seller INTEGER,
-        is_sync INTEGER DEFAULT 0)
-      ''');
+        is_sync INTEGER DEFAULT 0
+      )
+    ''');
+
   }
+
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('posapp15.db');
+
+    _database = await _initDB('posapp20.db');
     return _database!;
   }
 
-  // remove all data product
+  //remove all data product
   Future<void> removeAllProduct() async {
     final db = await instance.database;
     await db.delete(tableProducts);
   }
 
-  // tambah data produk
+  //insert data product from list product
   Future<void> insertAllProduct(List<Product> products) async {
     final db = await instance.database;
     for (var product in products) {
-      await db.insert(tableProducts, product.toJson());
+      await db.insert(tableProducts, product.toMap());
     }
   }
 
-  // Add single data produk
+  //isert data product
   Future<Product> insertProduct(Product product) async {
     final db = await instance.database;
-    int id = await db.insert(tableProducts, product.toJson());
+    int id = await db.insert(tableProducts, product.toMap());
     return product.copyWith(id: id);
   }
 
-  // Get all data produk dari lokal
+  //get all data product
   Future<List<Product>> getAllProduct() async {
     final db = await instance.database;
     final result = await db.query(tableProducts);
-    return result.map((e) => Product.fromJson(e)).toList();
+
+    return result.map((e) => Product.fromMap(e)).toList();
   }
 }
