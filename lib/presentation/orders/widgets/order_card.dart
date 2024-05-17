@@ -1,10 +1,16 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:possapp/core/components/spaces.dart';
-import 'package:possapp/core/constants/colors.dart';
-import 'package:possapp/presentation/orders/models/order_models.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:possapp/core/constants/variables.dart';
+import 'package:possapp/core/extensions/int_ext.dart';
+import 'package:possapp/presentation/home/bloc/checkout/checkout_bloc.dart';
+import 'package:possapp/presentation/home/models/order_item.dart';
+
+import '../../../core/components/spaces.dart';
+import '../../../core/constants/colors.dart';
 
 class OrderCard extends StatelessWidget {
-  final OrderModel data;
+  final OrderItem data;
   final VoidCallback onDeleteTap;
   final EdgeInsetsGeometry? padding;
 
@@ -22,27 +28,33 @@ class OrderCard extends StatelessWidget {
       children: [
         Container(
           margin: padding,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16.0),
           decoration: ShapeDecoration(
             color: Colors.white,
             shape: RoundedRectangleBorder(
-              side: const BorderSide(
-                  width: 2, color: Color.fromARGB(255, 108, 175, 229)),
+              side: const BorderSide(width: 2, color: Color(0xFFC7D0EB)),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
           child: Row(
             children: [
               ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(50)),
-                child: Image.asset(
-                  data.image,
+                borderRadius: const BorderRadius.all(Radius.circular(50.0)),
+                child: CachedNetworkImage(
+                  imageUrl: '${Variables.imageBaseUrl}${data.product.image}',
                   width: 76,
                   height: 76,
                   fit: BoxFit.cover,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      CircularProgressIndicator(
+                          value: downloadProgress.progress),
+                  errorWidget: (context, url, error) => const Icon(
+                    Icons.food_bank_rounded,
+                    size: 80,
+                  ),
                 ),
               ),
-              const SpaceWidth(24),
+              const SpaceWidth(24.0),
               Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,28 +63,29 @@ class OrderCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          data.name,
+                          data.product.name,
                           style: const TextStyle(
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         Text(
-                          data.priceFormat,
+                          data.product.price.currencyFormatRp,
                           style: const TextStyle(
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                       ],
                     ),
-                    const SpaceHeight(20),
+                    const SpaceHeight(20.0),
                     StatefulBuilder(
                       builder: (context, setState) => Row(
                         children: [
                           GestureDetector(
                             onTap: () {
                               if (data.quantity > 1) {
-                                data.quantity--;
-                                setState(() {});
+                                context.read<CheckoutBloc>().add(CheckoutEvent.removeCheckout(data.product));
+                                // data.quantity--;
+                                // setState(() {});
                               }
                             },
                             child: Container(
@@ -84,15 +97,16 @@ class OrderCard extends StatelessWidget {
                             ),
                           ),
                           SizedBox(
-                            width: 40,
+                            width: 40.0,
                             child: Center(
                               child: Text(data.quantity.toString()),
                             ),
                           ),
                           GestureDetector(
                             onTap: () {
-                              data.quantity++;
-                              setState(() {});
+                              context.read<CheckoutBloc>().add(CheckoutEvent.addCheckout(data.product));
+                              // data.quantity++;
+                              // setState(() {});
                             },
                             child: Container(
                               color: AppColors.white,
@@ -112,13 +126,14 @@ class OrderCard extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(right: 16),
+          padding: const EdgeInsets.only(right: 16.0),
           child: IconButton(
-              onPressed: onDeleteTap,
-              icon: const Icon(
-                Icons.highlight_off,
-                color: AppColors.primary,
-              )),
+            onPressed: onDeleteTap,
+            icon: const Icon(
+              Icons.highlight_off,
+              color: AppColors.primary,
+            ),
+          ),
         ),
       ],
     );

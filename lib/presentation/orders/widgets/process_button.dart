@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:possapp/core/components/spaces.dart';
 import 'package:possapp/core/constants/colors.dart';
 import 'package:possapp/core/extensions/int_ext.dart';
+import 'package:possapp/presentation/home/bloc/checkout/checkout_bloc.dart';
 
 class ProcessButton extends StatelessWidget {
   final int price;
@@ -26,14 +28,37 @@ class ProcessButton extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Text(
-              price.currencyFormatRp,
-              style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700,),
+            BlocBuilder<CheckoutBloc, CheckoutState>(
+              builder: (context, state) {
+                return state.maybeWhen(orElse: () {
+                  return const Text(
+                    'Rp. 0',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  );
+                }, success: (data, qty, total) {
+                  return Text(
+                    total.currencyFormatRp,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  );
+                });
+              },
             ),
             const Spacer(),
             const Text(
               'Proses',
-              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700,),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SpaceHeight(5),
             const Icon(

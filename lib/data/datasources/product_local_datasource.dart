@@ -1,5 +1,7 @@
 
 import 'package:possapp/data/models/response/product_response_model.dart';
+import 'package:possapp/presentation/home/models/order_item.dart';
+import 'package:possapp/presentation/orders/models/order_models.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ProductLocalDatasource {
@@ -36,13 +38,65 @@ class ProductLocalDatasource {
       )
     ''');
 
+    await db.execute('''
+      CREATE TABLE orders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nominal INTEGER,
+        payment_method TEXT,
+        total_item INTEGER,
+        id_kasir INTEGER,
+        nama_kasir TEXT,
+        is_sync INTEGER DEFAULT 0
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE order_item (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id_order INTEGER,
+        id_product INTEGER,
+        quantity INTEGER,
+        price INTEGER
+      )
+    ''');
+
   }
 
+  // Save Order
+  Future<int> saveOrder(OrderModel order) async {
+    final db = await instance.database;
+    int id = await db.insert('orders', order.toMapForLocal());
+    for (var orderItem in order.orders) {
+      await db.insert('order_item', orderItem.toMapForLocal(id));
+    }
+    return id;
+  }
+
+  // get order by isSync = 0
+  Future<List<OrderModel>> getOrderByIsSync() async {
+    final db = await instance.database;
+    final result = await db.query('orders', where: 'is_sync = 0');
+    return result.map((e) => OrderModel.fromLocalMap(e)).toList();
+  }
+
+  // get order item by id order
+  Future<List<OrderItem>> getOrderItemByOrderId(int idOrder) async {
+    final db = await instance.database;
+    final result = await db.query('order_item', where: 'id_order = $idOrder');
+    return result.map((e) => OrderItem.fromMap(e)).toList();
+  }
+
+  // Update isSync order by id
+  Future<int> updateIsSyncById(int id) async {
+        // jadi nanti kalau datanya masuk ke server, kembaliannya bener, masuk ke order, baru di update datanya
+    final db = await instance.database;
+    return await db.update('orders', {'is_sync': 1}, where: 'id = ?', whereArgs: [id]);
+  }
 
   Future<Database> get database async {
     if (_database != null) return _database!;
 
-    _database = await _initDB('posapp20.db');
+    _database = await _initDB('posapp22.db');
     return _database!;
   }
 

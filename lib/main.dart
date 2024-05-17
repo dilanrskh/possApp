@@ -11,6 +11,7 @@ import 'package:possapp/presentation/home/bloc/checkout/checkout_bloc.dart';
 import 'package:possapp/presentation/home/bloc/logout/logout_bloc.dart';
 import 'package:possapp/presentation/home/bloc/product/product_bloc.dart';
 import 'package:possapp/presentation/home/pages/dashboard_page.dart';
+import 'package:possapp/presentation/orders/bloc/order/order_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,6 +36,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => CheckoutBloc(),
+        ),
+        BlocProvider(
+          create: (context) => OrderBloc(),
         ),
       ],
       child: MaterialApp(

@@ -3,6 +3,7 @@ import 'package:possapp/core/assets/assets.gen.dart';
 import 'package:possapp/core/constants/colors.dart';
 import 'package:possapp/presentation/home/pages/home_page.dart';
 import 'package:possapp/presentation/home/widgets/nav_item.dart';
+import 'package:possapp/presentation/orders/pages/orders_page.dart';
 import 'package:possapp/presentation/setting/pages/setting_page.dart';
 class DashboardPageState extends StatefulWidget {
   const DashboardPageState({super.key});
@@ -16,9 +17,7 @@ class _DashboardPageStateState extends State<DashboardPageState> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    const Center(
-      child: Text("Payment"),
-    ),
+    const OrdersPage(),
     const Center(
       child: Text("History"),
     ),
