@@ -11,7 +11,7 @@ class OrderModel {
   final int totalQuantity;
   final int totalPrice;
   final int idKasir;
-  final int namaKasir;
+  final String namaKasir;
   final bool isSync;
 
   OrderModel({
@@ -64,7 +64,7 @@ class OrderModel {
       totalQuantity: map['totalQuantity'] as int,
       totalPrice: map['totalPrice'] as int,
       idKasir: map['idKasir'] as int,
-      namaKasir: map['namaKasir'] as int,
+      namaKasir: map['namaKasir'] as String,
       isSync: map['isSync'] as bool,
     );
   }

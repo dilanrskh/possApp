@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:possapp/core/components/buttins.dart';
 import 'package:possapp/core/components/custom_text_field.dart';
 import 'package:possapp/core/components/spaces.dart';
@@ -6,6 +7,9 @@ import 'package:possapp/core/constants/colors.dart';
 import 'package:possapp/core/extensions/build_context_ext.dart';
 import 'package:possapp/core/extensions/int_ext.dart';
 import 'package:possapp/core/extensions/string_ext.dart';
+import 'package:possapp/data/datasources/product_local_datasource.dart';
+import 'package:possapp/presentation/orders/bloc/order/order_bloc.dart';
+import 'package:possapp/presentation/orders/models/order_models.dart';
 import 'package:possapp/presentation/orders/widgets/payment_success_dialog.dart';
 
 class PaymentCashDialog extends StatefulWidget {
@@ -18,14 +22,14 @@ class PaymentCashDialog extends StatefulWidget {
 
 class _PaymentCashDialogState extends State<PaymentCashDialog> {
   TextEditingController? priceController;
-  
+
   @override
   void initState() {
-    priceController = TextEditingController(text: widget.price.currencyFormatRp);
+    priceController =
+        TextEditingController(text: widget.price.currencyFormatRp);
     super.initState();
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -96,15 +100,49 @@ class _PaymentCashDialogState extends State<PaymentCashDialog> {
             ],
           ),
           const SpaceHeight(30),
-          Button.filled(
-            onPressed: () {
-              context.pop();
-              showDialog(
-                context: context,
-                builder: (context) => const PaymentSuccessDialog(),
-              );
+          BlocConsumer<OrderBloc, OrderState>(
+            listener: (context, state) {
+              state.maybeWhen(
+                  orElse: () {},
+                  success:
+                      (data, qty, total, payment, nominal, idKasir, namaKasir) {
+                    final orderModel = OrderModel(
+                        paymentMethod: payment,
+                        nominalBayar: nominal,
+                        orders: data,
+                        totalQuantity: qty,
+                        totalPrice: total,
+                        idKasir: idKasir,
+                        namaKasir: namaKasir,
+                        isSync: false);
+                    ProductLocalDatasource.instance.saveOrder(orderModel);
+                    context.pop();
+                    showDialog(
+                        context: context,
+                        builder: (context) => const PaymentSuccessDialog());
+                  });
             },
-            label: 'Proses',
+            builder: (context, state) {
+              return state.maybeWhen(orElse: () {
+                return SizedBox();
+              }, success: (data, qty, total, payment, _, idKasir, namaKasir) {
+                return Button.filled(
+                  onPressed: () {
+                    context.read<OrderBloc>().add(OrderEvent.addNominalBayar(
+                          priceController!.text.toIntegerFromText,
+                        ));
+                    // context.pop();
+                    // showDialog(
+                    //   context: context,
+                    //   builder: (context) => const PaymentSuccessDialog(),
+                    // );
+                  },
+                  label: 'Proses',
+                );
+              }, error: (message) {
+                return const SizedBox();
+              });
+            },
           ),
         ],
       ),
