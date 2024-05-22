@@ -35,6 +35,7 @@ class ProductResponseModel {
 
 class Product {
   final int? id;
+  final int? productId;
   final String name;
   final String? deskripsi;
   final int price;
@@ -47,6 +48,7 @@ class Product {
 
   Product({
     this.id,
+    this.productId,
     required this.name,
     this.deskripsi,
     required this.price,
@@ -64,6 +66,7 @@ class Product {
 
   factory Product.fromMap(Map<String, dynamic> json) => Product(
         id: json["id"],
+        productId: json["product_id"],
         name: json["name"],
         deskripsi: json["deskripsi"] ?? '',
         price: json["price"],
@@ -83,10 +86,22 @@ class Product {
         "category": category,
         "image": image,
         "is_best_seller": isBestSeller ? 1 : 0,
+        "product_id": productId,
+      };
+
+  Map<String, dynamic> toLocalMap() => {
+        "name": name,
+        "price": price,
+        "stock": stock,
+        "category": category,
+        "image": image,
+        "is_best_seller": isBestSeller ? 1 : 0,
+        "product_id": id,
       };
 
   Product copyWith({
     int? id,
+    int? productId,
     String? name,
     String? deskripsi,
     int? price,
@@ -99,6 +114,7 @@ class Product {
   }) {
     return Product(
       id: id ?? this.id,
+      productId: productId ?? this.productId,
       name: name ?? this.name,
       deskripsi: deskripsi ?? this.deskripsi,
       price: price ?? this.price,
@@ -111,35 +127,33 @@ class Product {
     );
   }
 
-
   @override
   bool operator ==(covariant Product other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.name == name &&
-      other.deskripsi == deskripsi &&
-      other.price == price &&
-      other.stock == stock &&
-      other.category == category &&
-      other.image == image &&
-      other.isBestSeller == isBestSeller &&
-      other.createdAt == createdAt &&
-      other.updatedAt == updatedAt;
+
+    return other.id == id &&
+        other.name == name &&
+        other.deskripsi == deskripsi &&
+        other.price == price &&
+        other.stock == stock &&
+        other.category == category &&
+        other.image == image &&
+        other.isBestSeller == isBestSeller &&
+        other.createdAt == createdAt &&
+        other.updatedAt == updatedAt;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      name.hashCode ^
-      deskripsi.hashCode ^
-      price.hashCode ^
-      stock.hashCode ^
-      category.hashCode ^
-      image.hashCode ^
-      isBestSeller.hashCode ^
-      createdAt.hashCode ^
-      updatedAt.hashCode;
+        name.hashCode ^
+        deskripsi.hashCode ^
+        price.hashCode ^
+        stock.hashCode ^
+        category.hashCode ^
+        image.hashCode ^
+        isBestSeller.hashCode ^
+        createdAt.hashCode ^
+        updatedAt.hashCode;
   }
 }

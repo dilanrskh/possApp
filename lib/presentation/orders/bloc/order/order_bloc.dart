@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:possapp/data/datasources/auth_local_datasource.dart';
 import 'package:possapp/presentation/home/models/order_item.dart';
 
 part 'order_event.dart';
@@ -8,8 +9,9 @@ part 'order_bloc.freezed.dart';
 
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
   OrderBloc() : super(const _Success([], 0, 0, '', 0, 0, '')) {
-    on<_AddPaymentMethod>((event, emit) {
+    on<_AddPaymentMethod>((event, emit) async {
       emit(const _Loading());
+      final userData = await AuthLocalDataSource().getAuthData();
       emit(
         _Success(
           event.orders,
@@ -21,8 +23,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
                   previousValue + (element.quantity * element.product.price)),
           event.paymentMethod,
           0,
-          0,
-          '',
+          userData.user.id,
+          userData.user.name,
         ),
       );
     });

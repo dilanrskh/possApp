@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:possapp/core/components/buttins.dart';
 import 'package:possapp/core/components/custom_text_field.dart';
 import 'package:possapp/core/components/spaces.dart';
@@ -107,14 +108,17 @@ class _PaymentCashDialogState extends State<PaymentCashDialog> {
                   success:
                       (data, qty, total, payment, nominal, idKasir, namaKasir) {
                     final orderModel = OrderModel(
-                        paymentMethod: payment,
-                        nominalBayar: nominal,
-                        orders: data,
-                        totalQuantity: qty,
-                        totalPrice: total,
-                        idKasir: idKasir,
-                        namaKasir: namaKasir,
-                        isSync: false);
+                      paymentMethod: payment,
+                      nominalBayar: nominal,
+                      orders: data,
+                      totalQuantity: qty,
+                      totalPrice: total,
+                      idKasir: idKasir,
+                      namaKasir: namaKasir,
+                      isSync: false,
+                      transactionTime: DateFormat('yyyy-MM-ddTHH:mm:ss')
+                          .format(DateTime.now()),
+                    );
                     ProductLocalDatasource.instance.saveOrder(orderModel);
                     context.pop();
                     showDialog(

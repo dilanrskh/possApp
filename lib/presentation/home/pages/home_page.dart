@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
 
   void onCategoryTap(int index) {
     searchController.clear();
-    indexValue.value =index;
+    indexValue.value = index;
     String category = 'all';
     switch (index) {
       case 0:
@@ -98,12 +98,18 @@ class _HomePageState extends State<HomePage> {
             SearchInput(
               controller: searchController,
               onChanged: (value) {
-                // indexValue.value = 0;
-                // searchResults = products
-                //     .where((e) =>
-                //         e.name.toLowerCase().contains(value.toLowerCase()))
-                //     .toList();
-                // setState(() {});
+                
+                if (value.length >= 1) {
+                  context
+                      .read<ProductBloc>()
+                      .add(ProductEvent.searchProduct(value));
+                }
+
+                if (value.isEmpty) {
+                  context
+                      .read<ProductBloc>()
+                      .add(const ProductEvent.fetchAllFromState());
+                }
               },
             ),
             const SpaceHeight(20.0),

@@ -62,13 +62,29 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         image: event.image,
       );
       final response = await _productRemoteDataSource.addProduct(requestData);
-      response.fold(
-        (l) => emit(ProductState.error(l)),
-        (r) {
-          products.add(r.data);
-          emit(ProductState.success(products));
-        }
-      );
+      response.fold((l) => emit(ProductState.error(l)), (r) {
+        products.add(r.data);
+        emit(ProductState.success(products));
+      });
+
+      emit(ProductState.success(products));
+    });
+
+    // Ini buat search data product
+    on<_SearchProduct>((event, emit) async {
+      emit(const ProductState.loading());
+
+      final newProduct = products
+          .where((element) =>
+              element.name.toLowerCase().contains(event.query.toLowerCase()))
+          .toList();
+
+      emit(ProductState.success(newProduct));
+    });
+
+    // Ini buat ngembaliin ke halaman awal
+    on<_FetchAllFromState>((event, emit) async {
+      emit(const ProductState.loading());
 
       emit(ProductState.success(products));
     });

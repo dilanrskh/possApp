@@ -1,4 +1,4 @@
-
+import 'package:possapp/data/models/request/order_request_model.dart';
 import 'package:possapp/data/models/response/product_response_model.dart';
 import 'package:possapp/presentation/home/models/order_item.dart';
 import 'package:possapp/presentation/orders/models/order_models.dart';
@@ -28,6 +28,7 @@ class ProductLocalDatasource {
     await db.execute('''
       CREATE TABLE $tableProducts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        product_id INTEGER,
         name TEXT,
         price INTEGER,
         stock INTEGER,
@@ -40,12 +41,13 @@ class ProductLocalDatasource {
 
     await db.execute('''
       CREATE TABLE orders (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nominal INTEGER,
         payment_method TEXT,
         total_item INTEGER,
         id_kasir INTEGER,
         nama_kasir TEXT,
+        transaction_time TEXT,
         is_sync INTEGER DEFAULT 0
       )
     ''');
@@ -59,7 +61,6 @@ class ProductLocalDatasource {
         price INTEGER
       )
     ''');
-
   }
 
   // Save Order
@@ -76,6 +77,14 @@ class ProductLocalDatasource {
   Future<List<OrderModel>> getOrderByIsSync() async {
     final db = await instance.database;
     final result = await db.query('orders', where: 'is_sync = 0');
+
+    return result.map((e) => OrderModel.fromLocalMap(e)).toList();
+  }
+
+  // get all orders
+  Future<List<OrderModel>> getAllOrder() async {
+    final db = await instance.database;
+    final result = await db.query('orders', orderBy: 'id DESC');
     return result.map((e) => OrderModel.fromLocalMap(e)).toList();
   }
 
@@ -86,17 +95,24 @@ class ProductLocalDatasource {
     return result.map((e) => OrderItem.fromMap(e)).toList();
   }
 
-  // Update isSync order by id
-  Future<int> updateIsSyncById(int id) async {
-        // jadi nanti kalau datanya masuk ke server, kembaliannya bener, masuk ke order, baru di update datanya
+  // get order item by id order lokal
+  Future<List<OrderItemModel>> getOrderItemByOrderIdLocal(int idOrder) async {
     final db = await instance.database;
-    return await db.update('orders', {'is_sync': 1}, where: 'id = ?', whereArgs: [id]);
+    final result = await db.query('order_item', where: 'id_order = $idOrder');
+    return result.map((e) => OrderItem.fromMapLocal(e)).toList();
+  }
+
+  // Update isSync order by id
+  Future<int> updateIsSyncOrderById(int id) async {
+    final db = await instance.database;
+    return await db.update('orders', {'is_sync': 1},
+        where: 'id = ?', whereArgs: [id]);
   }
 
   Future<Database> get database async {
     if (_database != null) return _database!;
 
-    _database = await _initDB('posapp32.db');
+    _database = await _initDB('posapp34.db');
     return _database!;
   }
 
@@ -110,7 +126,7 @@ class ProductLocalDatasource {
   Future<void> insertAllProduct(List<Product> products) async {
     final db = await instance.database;
     for (var product in products) {
-      await db.insert(tableProducts, product.toMap());
+      await db.insert(tableProducts, product.toLocalMap());
     }
   }
 
