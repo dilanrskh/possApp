@@ -118,6 +118,12 @@ class $AssetsImagesGen {
   AssetGenImage get managePrinter =>
       const AssetGenImage('assets/images/manage_printer.png');
 
+  AssetGenImage get manageQris =>
+      const AssetGenImage('assets/images/manage_qris.png');
+
+  AssetGenImage get manageSync =>
+      const AssetGenImage('assets/images/manage_sync.png');
+
   /// File path: assets/images/manage_printerx.png
   AssetGenImage get managePrinterx =>
       const AssetGenImage('assets/images/manage_printerx.png');
@@ -139,7 +145,9 @@ class $AssetsImagesGen {
         logo,
         managePrinter,
         managePrinterx,
-        manageProduct
+        manageProduct,
+        manageQris,
+        manageSync
       ];
 }
 

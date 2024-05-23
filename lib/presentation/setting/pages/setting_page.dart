@@ -55,14 +55,14 @@ class _SettingPageState extends State<SettingPage> {
             child: Row(
               children: [
                 MenuButton(
-                  iconPath: Assets.images.manageProduct.path,
+                  iconPath: Assets.images.manageQris.path,
                   label: 'QRIS Server Key',
                   onPressed: () => context.push(const ManageProductPage()),
                   isImage: true,
                 ),
                 const SpaceWidth(15),
                 MenuButton(
-                  iconPath: Assets.images.managePrinter.path,
+                  iconPath: Assets.images.manageSync.path,
                   label: 'Sinkronisasi Data',
                   onPressed: () {
                     Navigator.push(
@@ -77,7 +77,7 @@ class _SettingPageState extends State<SettingPage> {
               ],
             ),
           ),
-          const SpaceHeight(60),
+          const SpaceHeight(10),
           BlocConsumer<LogoutBloc, LogoutState>(
             listener: (context, state) {
               state.maybeMap(
@@ -93,15 +93,22 @@ class _SettingPageState extends State<SettingPage> {
             },
             // dibuilder bakal mengembalikan widget
             builder: (context, state) {
-              return ElevatedButton(
-                onPressed: () {
-                  context.read<LogoutBloc>().add(const LogoutEvent.logout());
-                },
-                child: const Text('Logout'),
+              return Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    context.read<LogoutBloc>().add(const LogoutEvent.logout());
+                  },
+                  style: ButtonStyle(
+                    mouseCursor: MaterialStateProperty.all(MouseCursor.defer),
+                    minimumSize: MaterialStateProperty.all(
+                        const Size(double.infinity, 50)),
+                  ),
+                  child: const Text('Logout'),
+                ),
               );
             },
           ),
-          const Divider(),
         ],
       ),
     );
